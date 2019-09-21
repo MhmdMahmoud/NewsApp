@@ -1,10 +1,16 @@
 package com.example.newz;
 
+import android.app.SearchManager;
+import android.content.Context;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
+import android.widget.SearchView;
 import android.widget.Toast;
 
 import com.example.newz.API.ApiClient;
@@ -36,17 +42,23 @@ public class MainActivity extends AppCompatActivity {
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         recyclerView.setNestedScrollingEnabled(false);
 
-        loadNews();
+        loadNews("");
     }
 
-    public void loadNews(){
+    public void loadNews(String keyword){
 
         INewsApi newsApi = ApiClient.getApiClient().create(INewsApi.class);
 
         String country = Utils.getCountry();
 
         Call<News> call;
-        call = newsApi.getNews(country, Const.API_KEY);
+
+        if(keyword.length() > 0){
+            call = newsApi.getNewsSearch(keyword, "en", "publishedAt", Const.API_KEY);
+        }else {
+            call = newsApi.getNews(country, Const.API_KEY);
+        }
+
         call.enqueue(new Callback<News>() {
             @Override
             public void onResponse(Call<News> call, Response<News> response) {
@@ -70,4 +82,33 @@ public class MainActivity extends AppCompatActivity {
             }
         });
     }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.menu_main, menu);
+
+        SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
+        final SearchView searchView = (SearchView) menu.findItem(R.id.app_bar_search_main).getActionView();
+        MenuItem searchMenuItem = menu.findItem(R.id.app_bar_search_main);
+
+        searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
+        searchView.setQueryHint("Search Latest News");
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                loadNews(query);
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                loadNews(newText);
+                return false;
+            }
+        });
+        return super.onCreateOptionsMenu(menu);
+    }
+
 }
