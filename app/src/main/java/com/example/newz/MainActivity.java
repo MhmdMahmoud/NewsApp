@@ -2,6 +2,7 @@ package com.example.newz;
 
 import android.app.SearchManager;
 import android.content.Context;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.DefaultItemAnimator;
@@ -25,8 +26,9 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements SwipeRefreshLayout.OnRefreshListener{
 
+    private SwipeRefreshLayout refreshLayout;
     private RecyclerView recyclerView;
     private RecyclerView.LayoutManager layoutManager;
     private List<Article> articles = new ArrayList<>();
@@ -36,16 +38,22 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        refreshLayout = findViewById(R.id.swipe_refreash_main);
+        refreshLayout.setOnRefreshListener(this);
+        refreshLayout.setColorSchemeResources(R.color.colorAccent);
+
         recyclerView = findViewById(R.id.main_recycler);
         layoutManager = new LinearLayoutManager(MainActivity.this);
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         recyclerView.setNestedScrollingEnabled(false);
 
-        loadNews("");
+        onLoading("");
     }
 
     public void loadNews(String keyword){
+
+        refreshLayout.setRefreshing(true);
 
         INewsApi newsApi = ApiClient.getApiClient().create(INewsApi.class);
 
@@ -71,14 +79,18 @@ public class MainActivity extends AppCompatActivity {
                     recyclerView.setAdapter(newsAdapter);
                     newsAdapter.notifyDataSetChanged();
 
+                    refreshLayout.setRefreshing(false);
+
                 }else {
+
+                    refreshLayout.setRefreshing(false);
                     Toast.makeText(MainActivity.this,"no news", Toast.LENGTH_LONG).show();
                 }
             }
 
             @Override
             public void onFailure(Call<News> call, Throwable t) {
-
+                refreshLayout.setRefreshing(false);
             }
         });
     }
@@ -98,7 +110,7 @@ public class MainActivity extends AppCompatActivity {
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
-                loadNews(query);
+                onLoading(query);
                 return false;
             }
 
@@ -111,4 +123,17 @@ public class MainActivity extends AppCompatActivity {
         return super.onCreateOptionsMenu(menu);
     }
 
+    @Override
+    public void onRefresh() {
+        loadNews("");
+    }
+
+    public void onLoading(final String ketword){
+        refreshLayout.post(new Runnable() {
+            @Override
+            public void run() {
+                loadNews(ketword);
+            }
+        });
+    }
 }
