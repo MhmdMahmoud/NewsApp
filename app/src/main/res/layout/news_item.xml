@@ -41,9 +41,7 @@
                 android:id="@+id/author"
                 android:layout_width="match_parent"
                 android:layout_height="30dp"
-                android:layout_alignLeft="@+id/title"
                 android:layout_alignStart="@+id/title"
-                android:layout_alignRight="@+id/layoutDate"
                 android:layout_alignTop="@+id/layoutDate"
                 android:layout_alignEnd="@+id/layoutDate"
                 android:layout_marginEnd="160dp"
@@ -62,7 +60,7 @@
                 android:padding="5dp"
                 android:layout_alignParentEnd="true"
                 android:layout_marginEnd="20dp"
-                android:layout_marginTop="-50dp">
+                android:layout_marginTop="-40dp">
 
                 <ImageView
                     android:src="@drawable/ic_date"
@@ -101,7 +99,8 @@
                 android:layout_marginLeft="16dp"
                 android:layout_marginRight="16dp"
                 android:layout_marginTop="5dp"
-                android:text="Desc"/>
+                android:text="Desc"
+                android:maxLines="1"/>
             <TextView
                 android:id="@+id/source"
                 android:layout_width="wrap_content"
