@@ -2,6 +2,7 @@ package com.example.newz;
 
 import android.app.SearchManager;
 import android.content.Context;
+import android.content.Intent;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -11,6 +12,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.SearchView;
 import android.widget.Toast;
 
@@ -79,6 +81,8 @@ public class MainActivity extends AppCompatActivity implements SwipeRefreshLayou
                     recyclerView.setAdapter(newsAdapter);
                     newsAdapter.notifyDataSetChanged();
 
+                    initListener();
+
                     refreshLayout.setRefreshing(false);
 
                 }else {
@@ -91,6 +95,25 @@ public class MainActivity extends AppCompatActivity implements SwipeRefreshLayou
             @Override
             public void onFailure(Call<News> call, Throwable t) {
                 refreshLayout.setRefreshing(false);
+            }
+        });
+    }
+
+    private void initListener(){
+        newsAdapter.setOnItemClickListener(new NewsAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(View view, int Position) {
+                Intent intent = new Intent(MainActivity.this, NewsDetailsActivity.class);
+
+                Article article = articles.get(Position);
+                intent.putExtra("url", article.getUrl());
+                intent.putExtra("title", article.getTitle());
+                intent.putExtra("img", article.getUrlToImage());
+                intent.putExtra("date", article.getPublishedAt());
+                intent.putExtra("source", article.getSource().getName());
+                intent.putExtra("author", article.getAuthor());
+
+                startActivity(intent);
             }
         });
     }

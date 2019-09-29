@@ -75,8 +75,12 @@ public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.MyViewHolder> 
         return articles.size();
     }
 
+    public void setOnItemClickListener(OnItemClickListener onItemClickListener) {
+        this.onItemClickListener = onItemClickListener;
+    }
+
     public interface OnItemClickListener{
-        void onItemClick(View view, int Position);
+        void onItemClick(View view, int position);
     }
 
     public class MyViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
@@ -101,7 +105,7 @@ public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.MyViewHolder> 
 
         @Override
         public void onClick(View v) {
-
+            onItemClickListener.onItemClick(v, getAdapterPosition());
         }
     }
 }
