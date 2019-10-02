@@ -30,6 +30,8 @@ import retrofit2.Response;
 
 public class MainActivity extends AppCompatActivity implements SwipeRefreshLayout.OnRefreshListener{
 
+    Context context = this;
+
     private SwipeRefreshLayout refreshLayout;
     private RecyclerView recyclerView;
     private RecyclerView.LayoutManager layoutManager;
@@ -50,7 +52,12 @@ public class MainActivity extends AppCompatActivity implements SwipeRefreshLayou
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         recyclerView.setNestedScrollingEnabled(false);
 
-        onLoading("");
+        if (Utils.isNetworkConnected(context)){
+            onLoading("");
+        }
+        else {
+            Toast.makeText(context, "No Internet...", Toast.LENGTH_LONG).show();
+        }
     }
 
     public void loadNews(String keyword){

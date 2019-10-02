@@ -1,7 +1,9 @@
 package com.example.newz;
 
+import android.content.Context;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.net.ConnectivityManager;
 
 import org.ocpsoft.prettytime.PrettyTime;
 
@@ -62,5 +64,11 @@ public class Utils {
         Locale locale = Locale.getDefault();
         String country = String.valueOf(locale.getCountry());
         return country.toLowerCase();
+    }
+
+
+    public static boolean isNetworkConnected(Context context) {
+        ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+        return cm.getActiveNetworkInfo() != null;
     }
 }
