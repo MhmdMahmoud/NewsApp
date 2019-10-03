@@ -1,5 +1,6 @@
 package com.example.newz;
 
+import android.content.Context;
 import android.content.Intent;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
@@ -7,18 +8,22 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
+import android.webkit.WebResourceError;
+import android.webkit.WebResourceRequest;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions;
 
 public class NewsDetailsActivity extends AppCompatActivity implements AppBarLayout.OnOffsetChangedListener{
 
+    Context context = this;
     private ImageView imageView;
     private TextView appbar_title, appbar_subtitle, date, time, title;
     private boolean isHideToolbar = true;
@@ -85,14 +90,29 @@ public class NewsDetailsActivity extends AppCompatActivity implements AppBarLayo
     }
 
     private void initWebView(String url){
-        WebView webView = findViewById(R.id.webView);
+        final WebView webView = findViewById(R.id.webView);
         webView.getSettings().setLoadsImagesAutomatically(true);
         webView.getSettings().setJavaScriptEnabled(true);
         webView.getSettings().setSupportZoom(true);
         webView.getSettings().setDisplayZoomControls(false);
         webView.getSettings().getDomStorageEnabled();
         webView.setScrollBarStyle(View.SCROLLBARS_INSIDE_OVERLAY);
-        webView.setWebViewClient(new WebViewClient());
+
+        webView.setWebViewClient(new WebViewClient(){
+            //API above 23
+            @Override
+            public void onReceivedError(WebView view, WebResourceRequest request, WebResourceError error) {
+                view.loadUrl("file:///android_asset/errorPage/error_page.html");
+                super.onReceivedError(view, request, error);
+            }
+
+            //for API 23 or below
+            @Override
+            public void onReceivedError(WebView view, int errorCode, String description, String failingUrl) {
+                view.loadUrl("file:///android_asset/errorPage/error_page.html");
+                super.onReceivedError(view, errorCode, description, failingUrl);
+            }
+        });
         webView.loadUrl(url);
     }
 
