@@ -155,7 +155,13 @@ public class MainActivity extends AppCompatActivity implements SwipeRefreshLayou
 
     @Override
     public void onRefresh() {
-        loadNews("");
+        if (Utils.isNetworkConnected(context)){
+            onLoading("");
+        }
+        else {
+            Toast.makeText(context, "No Internet...", Toast.LENGTH_LONG).show();
+            refreshLayout.setRefreshing(false);
+        }
     }
 
     public void onLoading(final String ketword){
