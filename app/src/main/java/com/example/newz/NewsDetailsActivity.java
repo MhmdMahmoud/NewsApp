@@ -113,6 +113,12 @@ public class NewsDetailsActivity extends AppCompatActivity implements AppBarLayo
                 super.onReceivedError(view, errorCode, description, failingUrl);
             }
         });
+        webView.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                return true;
+            }
+        });
         webView.loadUrl(url);
     }
 
