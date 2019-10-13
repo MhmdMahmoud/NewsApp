@@ -125,6 +125,8 @@ public class NewsDetailsActivity extends AppCompatActivity implements AppBarLayo
     @Override
     public void onBackPressed() {
         super.onBackPressed();
+        //close intent with animation (from left to right)
+        overridePendingTransition(R.anim.trans_left_in, R.anim.trans_left_out);
         supportFinishAfterTransition();
     }
 

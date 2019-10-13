@@ -121,6 +121,8 @@ public class MainActivity extends AppCompatActivity implements SwipeRefreshLayou
                 intent.putExtra("author", article.getAuthor());
 
                 startActivity(intent);
+                //open intent with animation (from right to left)
+                overridePendingTransition(R.anim.trans_right_in,R.anim.trans_right_out);
             }
         });
     }
